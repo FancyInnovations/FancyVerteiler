@@ -1,0 +1,9 @@
+name: "FancyVerteiler"
+description: "Deploy Minecraft and Hytale plugins on multiple platforms"
+inputs:
+  my_input:
+    description: "An input parameter"
+    required: true
+runs:
+  using: "docker"
+  image: "Dockerfile"
