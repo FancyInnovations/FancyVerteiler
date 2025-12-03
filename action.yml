@@ -13,6 +13,9 @@ inputs:
   modrinth_api_key:
     description: "Modrinth API key for deployment"
     required: false
+  modtale_api_key:
+    description: "Modtale API key for deployment"
+    required: false
 runs:
   using: "docker"
   image: "Dockerfile"

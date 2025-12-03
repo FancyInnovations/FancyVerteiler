@@ -20,6 +20,7 @@ type DeploymentConfig struct {
 	version     string
 
 	Modrinth *Modrinth `json:"modrinth,omitempty"`
+	Modtale  *Modtale  `json:"modtale,omitempty"`
 }
 
 type Modrinth struct {
@@ -28,6 +29,11 @@ type Modrinth struct {
 	Channel           string   `json:"channel"`
 	Loaders           []string `json:"loaders"`
 	Featured          bool     `json:"featured"`
+}
+
+type Modtale struct {
+	ProjectID    string   `json:"project_id"`
+	GameVersions []string `json:"game_versions"`
 }
 
 func (d *DeploymentConfig) PluginJar() ([]byte, error) {

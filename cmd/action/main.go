@@ -5,6 +5,7 @@ import (
 	"FancyVerteiler/internal/discord"
 	"FancyVerteiler/internal/git"
 	"FancyVerteiler/internal/modrinth"
+	"FancyVerteiler/internal/modtale"
 
 	"github.com/sethvargo/go-githubactions"
 )
@@ -42,6 +43,21 @@ func main() {
 			githubactions.Fatalf("failed to deploy to Modrinth: %v", err)
 		}
 		githubactions.Infof("Successfully deployed to Modrinth project: %s", cfg.Modrinth.ProjectID)
+	}
+
+	if cfg.Modtale != nil {
+		apiKey := githubactions.GetInput("modtale_api_key")
+		if apiKey == "" {
+			githubactions.Fatalf("missing input 'modtale_api_key'")
+		}
+
+		githubactions.Infof("Deploying to Modtale project: %s", cfg.Modtale.ProjectID)
+
+		mt := modtale.New(apiKey)
+		if err := mt.Deploy(cfg); err != nil {
+			githubactions.Fatalf("failed to deploy to Modtale: %v", err)
+		}
+		githubactions.Infof("Successfully deployed to Modtale project: %s", cfg.Modtale.ProjectID)
 	}
 
 	if discWebhookURL != "" {
