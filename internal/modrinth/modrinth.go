@@ -4,6 +4,7 @@ import (
 	"FancyVerteiler/internal/config"
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io"
 	"mime/multipart"
 	"net/http"
@@ -71,6 +72,17 @@ func (s *Service) Deploy(cfg *config.DeploymentConfig) error {
 	// Set the correct Content-Type with boundary
 	req.Header.Set("Content-Type", writer.FormDataContentType())
 	req.Header.Set("Authorization", s.apiKey)
+
+	resp, err := s.hc.Do(req)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusCreated {
+		respBody, _ := io.ReadAll(resp.Body)
+		return fmt.Errorf("failed to create version: %s", string(respBody))
+	}
 
 	return nil
 }
