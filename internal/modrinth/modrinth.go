@@ -9,6 +9,7 @@ import (
 	"mime/multipart"
 	"net/http"
 	"os"
+	"path/filepath"
 	"strings"
 )
 
@@ -48,7 +49,7 @@ func (s *Service) Deploy(cfg *config.DeploymentConfig) error {
 	}
 	defer file.Close()
 
-	fileWriter, err := writer.CreateFormFile("pluginFile", file.Name())
+	fileWriter, err := writer.CreateFormFile("pluginFile", filepath.Base(pluginJarPath))
 	if err != nil {
 		return err
 	}
