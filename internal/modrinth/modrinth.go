@@ -80,7 +80,7 @@ func (s *Service) Deploy(cfg *config.DeploymentConfig) error {
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode != http.StatusCreated {
+	if resp.StatusCode != http.StatusOK {
 		respBody, _ := io.ReadAll(resp.Body)
 		return fmt.Errorf("failed to create version: %s", string(respBody))
 	}
