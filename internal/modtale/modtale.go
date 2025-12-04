@@ -2,6 +2,7 @@ package modtale
 
 import (
 	"FancyVerteiler/internal/config"
+	"FancyVerteiler/internal/git"
 	"bytes"
 	"fmt"
 	"io"
@@ -13,12 +14,14 @@ import (
 )
 
 type Service struct {
+	git    *git.Service
 	hc     *http.Client
 	apiKey string
 }
 
-func New(apiKey string) *Service {
+func New(apiKey string, git *git.Service) *Service {
 	return &Service{
+		git:    git,
 		hc:     &http.Client{},
 		apiKey: apiKey,
 	}
@@ -37,6 +40,8 @@ func (s *Service) Deploy(cfg *config.DeploymentConfig) error {
 	if err != nil {
 		return err
 	}
+	cl = strings.ReplaceAll(cl, "%COMMIT_HASH%", s.git.CommitSHA())
+	cl = strings.ReplaceAll(cl, "%COMMIT_MESSAGE%", s.git.CommitMessage())
 
 	_ = writer.WriteField("versionNumber", ver)
 	_ = writer.WriteField("gameVersions", strings.Join(cfg.Modtale.GameVersions, ","))

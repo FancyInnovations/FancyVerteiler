@@ -53,7 +53,7 @@ func main() {
 
 		githubactions.Infof("Deploying to Modtale project: %s", cfg.Modtale.ProjectID)
 
-		mt := modtale.New(apiKey)
+		mt := modtale.New(apiKey, gs)
 		if err := mt.Deploy(cfg); err != nil {
 			githubactions.Fatalf("failed to deploy to Modtale: %v", err)
 		}
