@@ -2,7 +2,6 @@ package git
 
 import (
 	"bytes"
-	"os"
 	"os/exec"
 	"strings"
 )
@@ -13,20 +12,27 @@ type Service struct {
 }
 
 func New() *Service {
+	return &Service{
+		cachedCommit:  "unknown",
+		cachedMessage: "unknown",
+	}
+}
+
+func (s *Service) Setup() error {
 	sha, err := fetchLatestCommitSHA()
 	if err != nil {
-		sha = "unknown"
+		return err
 	}
 
 	msg, err := fetchLatestCommitMessage()
 	if err != nil {
-		msg = "unknown"
+		return err
 	}
 
-	return &Service{
-		cachedCommit:  sha,
-		cachedMessage: msg,
-	}
+	s.cachedCommit = strings.TrimSpace(sha)
+	s.cachedMessage = strings.TrimSpace(msg)
+
+	return nil
 }
 
 func (s *Service) CommitSHA() string {
@@ -39,10 +45,10 @@ func (s *Service) CommitMessage() string {
 
 func fetchLatestCommitSHA() (string, error) {
 	cmd := exec.Command("git", "rev-parse", "--short", "HEAD")
-	cmd.Dir = os.Getenv("GITHUB_WORKSPACE")
 
 	var out bytes.Buffer
 	cmd.Stdout = &out
+	cmd.Stderr = &out
 
 	if err := cmd.Run(); err != nil {
 		return "", err
@@ -53,10 +59,10 @@ func fetchLatestCommitSHA() (string, error) {
 
 func fetchLatestCommitMessage() (string, error) {
 	cmd := exec.Command("git", "log", "-1", "--pretty=%B")
-	cmd.Dir = os.Getenv("GITHUB_WORKSPACE")
 
 	var out bytes.Buffer
 	cmd.Stdout = &out
+	cmd.Stderr = &out
 
 	if err := cmd.Run(); err != nil {
 		return "", err
