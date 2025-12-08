@@ -5,8 +5,6 @@ import (
 	"os"
 	"os/exec"
 	"strings"
-
-	"github.com/sethvargo/go-githubactions"
 )
 
 type Service struct {
@@ -22,27 +20,21 @@ func New() *Service {
 }
 
 func (s *Service) Setup() error {
-	workspace := os.Getenv("GITHUB_WORKSPACE")
-	githubactions.Infof("Workspace detected at %s", workspace)
-	dir, err := os.ReadDir(workspace)
-	if err != nil {
-		return err
-	}
+	//sha, err := fetchLatestCommitSHA()
+	//if err != nil {
+	//	return err
+	//}
+	//
+	//msg, err := fetchLatestCommitMessage()
+	//if err != nil {
+	//	return err
+	//}
+	//
+	//s.cachedCommit = strings.TrimSpace(sha)
+	//s.cachedMessage = strings.TrimSpace(msg)
 
-	githubactions.Infof("Workspace contents: %#v", dir)
-
-	sha, err := fetchLatestCommitSHA()
-	if err != nil {
-		return err
-	}
-
-	msg, err := fetchLatestCommitMessage()
-	if err != nil {
-		return err
-	}
-
-	s.cachedCommit = strings.TrimSpace(sha)
-	s.cachedMessage = strings.TrimSpace(msg)
+	s.cachedCommit = os.Getenv("COMMIT_SHA")
+	s.cachedMessage = os.Getenv("COMMIT_MESSAGE")
 
 	return nil
 }
