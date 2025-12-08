@@ -7,6 +7,7 @@ import (
 	"FancyVerteiler/internal/git"
 	"FancyVerteiler/internal/modrinth"
 	"FancyVerteiler/internal/modtale"
+	"FancyVerteiler/internal/orbis"
 
 	"github.com/sethvargo/go-githubactions"
 )
@@ -67,6 +68,21 @@ func main() {
 			githubactions.Fatalf("failed to deploy to Modrinth: %v", err)
 		}
 		githubactions.Infof("Successfully deployed to Modrinth project: %s", cfg.Modrinth.ProjectID)
+	}
+
+	if cfg.Orbis != nil {
+		apiKey := githubactions.GetInput("orbis_api_key")
+		if apiKey == "" {
+			githubactions.Fatalf("missing input 'orbis_api_key'")
+		}
+
+		githubactions.Infof("Deploying to Orbis resource: %s", cfg.Orbis.ResourceID)
+
+		ob := orbis.New(apiKey, gs)
+		if err := ob.Deploy(cfg); err != nil {
+			githubactions.Fatalf("failed to deploy to Orbis: %v", err)
+		}
+		githubactions.Infof("Successfully deployed to Orbis resource: %s", cfg.Orbis.ResourceID)
 	}
 
 	if cfg.Modtale != nil {

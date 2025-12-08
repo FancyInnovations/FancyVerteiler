@@ -21,6 +21,7 @@ type DeploymentConfig struct {
 
 	FancySpaces *FancySpaces `json:"fancyspaces,omitempty"`
 	Modrinth    *Modrinth    `json:"modrinth,omitempty"`
+	Orbis       *Orbis       `json:"orbis,omitempty"`
 	Modtale     *Modtale     `json:"modtale,omitempty"`
 }
 
@@ -37,6 +38,12 @@ type Modrinth struct {
 	Channel           string   `json:"channel"`
 	Loaders           []string `json:"loaders"`
 	Featured          bool     `json:"featured"`
+}
+
+type Orbis struct {
+	ResourceID        string   `json:"resource_id"`
+	Channel           string   `json:"channel"`
+	SupportedVersions []string `json:"supported_versions"`
 }
 
 type Modtale struct {

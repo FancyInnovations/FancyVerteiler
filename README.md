@@ -7,6 +7,7 @@ This action allows you to push version updates of Minecraft or Hytale plugins to
 Publish your plugin to:
 - [FancySpaces](https://fancyspaces.net/)
 - [Modrinth](https://modrinth.com/)
+- [Orbis](https://orbis.place/)
 - [Modtale](https://modtale.net/)
 
 Send notifications to a Discord channel via webhook.
@@ -22,6 +23,7 @@ Include the following in your GitHub Actions workflow:
     commit_message: "see example for git integration below"
     fancyspaces_api_key: ${{ secrets.FANCYSPACES_API_KEY }}
     modrinth_api_key: ${{ secrets.MODRINTH_API_KEY }}
+    orbis_api_key: ${{ secrets.ORBIS_API_KEY }}
     modtale_api_key: ${{ secrets.MODTALE_API_KEY }}
     discord_webhook_url: ${{ secrets.DISCORD_WEBHOOK_URL }}
 ```
@@ -32,6 +34,7 @@ Inputs:
 - `commit_message` (optional): The commit message to replace in the changelog.
 - `fancyspaces_api_key` is only required if you want to publish to FancySpaces.
 - `modrinth_api_key` is only required if you want to publish to Modrinth.
+- `orbis_api_key` is only required if you want to publish to Orbis.
 - `modtale_api_key` is only required if you want to publish to Modtale.
 - `discord_webhook_url` is only required if you want to send notifications to Discord.
 
@@ -54,6 +57,11 @@ Example config:
     "channel": "release",
     "loaders": [ "paper", "folia" ],
     "featured": true
+  },
+  "orbis": {
+    "resource_id": "1234",
+    "channel": "RELEASE",
+    "supported_versions": [ "2026.12.02.12312313" ]
   },
   "modtale": {
     "project_id": "abcdef123456",

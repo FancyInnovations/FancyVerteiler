@@ -22,6 +22,9 @@ inputs:
   modrinth_api_key:
     description: "Modrinth API key for deployment"
     required: false
+  orbis_api_key:
+    description: "Orbis API key for deployment"
+    required: false
   modtale_api_key:
     description: "Modtale API key for deployment"
     required: false
