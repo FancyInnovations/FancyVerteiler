@@ -9,6 +9,7 @@ import (
 	"log/slog"
 	"net/http"
 	"path/filepath"
+	"strings"
 )
 
 type Service struct {
@@ -83,6 +84,7 @@ func buildDescription(cfg *config.DeploymentConfig) (string, error) {
 
 	if cfg.FancySpaces != nil {
 		fileName := filepath.Base(cfg.PluginJarPath)
+		fileName = strings.ReplaceAll(fileName, "%VERSION%", ver)
 		desc += fmt.Sprintf("\n**FancySpaces:** https://fancyspaces.net/api/v1/spaces/%s/versions/%s/files/%s", cfg.FancySpaces.SpaceID, ver, fileName)
 	}
 
