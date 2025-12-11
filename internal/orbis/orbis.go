@@ -72,6 +72,7 @@ func (s *Service) createVersion(cfg *config.DeploymentConfig) (string, error) {
 	}
 	reqBody.Header.Set("Content-Type", "application/json")
 	reqBody.Header.Set("Authorization", "Bearer "+s.apiKey)
+	reqBody.Header.Set("User-Agent", "FancyVerteiler (https://github.com/FancyInnovations/FancyVerteiler)")
 
 	resp, err := s.hc.Do(reqBody)
 	if err != nil {

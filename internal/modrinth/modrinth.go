@@ -76,6 +76,7 @@ func (s *Service) Deploy(cfg *config.DeploymentConfig) error {
 	// Set the correct Content-Type with boundary
 	req.Header.Set("Content-Type", writer.FormDataContentType())
 	req.Header.Set("Authorization", s.apiKey)
+	req.Header.Set("User-Agent", "FancyVerteiler (https://github.com/FancyInnovations/FancyVerteiler)")
 
 	resp, err := s.hc.Do(req)
 	if err != nil {
