@@ -1,12 +1,12 @@
 package curseforge
 
 type CreateVersionReq struct {
-	Changelog     string                 `json:"changelog"`
-	ChangelogType string                 `json:"changelogType"`
-	DisplayName   string                 `json:"displayName"`
-	GameVersions  []int                  `json:"gameVersions"`
-	ReleaseType   string                 `json:"releaseType"`
-	Relations     CreateVersionRelations `json:"relations"`
+	Changelog     string                  `json:"changelog"`
+	ChangelogType string                  `json:"changelogType"`
+	DisplayName   string                  `json:"displayName"`
+	GameVersions  []int                   `json:"gameVersions"`
+	ReleaseType   string                  `json:"releaseType"`
+	Relations     *CreateVersionRelations `json:"relations,omitempty"`
 }
 
 type CreateVersionRelations struct {

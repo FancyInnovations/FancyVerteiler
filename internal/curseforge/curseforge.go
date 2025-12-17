@@ -128,27 +128,27 @@ func (s *Service) metadataJson(cfg *config.DeploymentConfig) (string, error) {
 		}
 	}
 
-	// Convert config relations to API relations
-	var relations CreateVersionRelations
-	if cfg.CurseForge.Relations != nil && len(cfg.CurseForge.Relations.Projects) > 0 {
-		relations.Projects = make([]ProjectRelation, len(cfg.CurseForge.Relations.Projects))
-		for i, proj := range cfg.CurseForge.Relations.Projects {
-			relations.Projects[i] = ProjectRelation{
-				Slug: proj.Slug,
-				Type: proj.Type,
-			}
-		}
-	} else {
-		relations.Projects = []ProjectRelation{}
-	}
-
 	req := CreateVersionReq{
 		Changelog:     cl,
 		ChangelogType: "markdown",
 		DisplayName:   ver,
 		GameVersions:  gameVersionIDs,
 		ReleaseType:   cfg.CurseForge.ReleaseType,
-		Relations:     relations,
+		Relations:     nil, // Set to nil initially
+	}
+
+	// Only add relations if they are provided in config
+	if cfg.CurseForge.Relations != nil && len(cfg.CurseForge.Relations.Projects) > 0 {
+		relations := &CreateVersionRelations{
+			Projects: make([]ProjectRelation, len(cfg.CurseForge.Relations.Projects)),
+		}
+		for i, proj := range cfg.CurseForge.Relations.Projects {
+			relations.Projects[i] = ProjectRelation{
+				Slug: proj.Slug,
+				Type: proj.Type,
+			}
+		}
+		req.Relations = relations
 	}
 
 	data, err := json.Marshal(req)
