@@ -28,6 +28,9 @@ inputs:
   modtale_api_key:
     description: "Modtale API key for deployment"
     required: false
+  curseforge_api_key:
+    description: "CurseForge API key for deployment"
+    required: false
 runs:
   using: "docker"
   image: "Dockerfile"

@@ -23,6 +23,7 @@ type DeploymentConfig struct {
 	Modrinth    *Modrinth    `json:"modrinth,omitempty"`
 	Orbis       *Orbis       `json:"orbis,omitempty"`
 	Modtale     *Modtale     `json:"modtale,omitempty"`
+	CurseForge  *CurseForge  `json:"curseforge,omitempty"`
 }
 
 type FancySpaces struct {
@@ -49,6 +50,12 @@ type Orbis struct {
 type Modtale struct {
 	ProjectID    string   `json:"project_id"`
 	GameVersions []string `json:"game_versions"`
+}
+
+type CurseForge struct {
+	ProjectID    string `json:"project_id"`
+	GameVersions []int  `json:"game_versions"`
+	ReleaseType  string `json:"release_type"`
 }
 
 func (d *DeploymentConfig) PluginJar() ([]byte, error) {
