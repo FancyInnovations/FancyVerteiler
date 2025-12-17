@@ -66,7 +66,8 @@ Example config:
   },
   "curseforge": {
     "project_id": "123456",
-    "game_versions": [ 9957, 9956 ],
+    "type": "plugin",
+    "game_versions": [ "1.21.10", "1.21.11" ],
     "release_type": "release"
   },
   "orbis": {
