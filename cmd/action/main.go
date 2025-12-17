@@ -2,6 +2,7 @@ package main
 
 import (
 	"FancyVerteiler/internal/config"
+	"FancyVerteiler/internal/curseforge"
 	"FancyVerteiler/internal/discord"
 	"FancyVerteiler/internal/fancyspaces"
 	"FancyVerteiler/internal/git"
@@ -98,6 +99,21 @@ func main() {
 			githubactions.Fatalf("failed to deploy to Modtale: %v", err)
 		}
 		githubactions.Infof("Successfully deployed to Modtale project: %s", cfg.Modtale.ProjectID)
+	}
+
+	if cfg.CurseForge != nil {
+		apiKey := githubactions.GetInput("curseforge_api_key")
+		if apiKey == "" {
+			githubactions.Fatalf("missing input 'curseforge_api_key'")
+		}
+
+		githubactions.Infof("Deploying to CurseForge project: %s", cfg.CurseForge.ProjectID)
+
+		cf := curseforge.New(apiKey, gs)
+		if err := cf.Deploy(cfg); err != nil {
+			githubactions.Fatalf("failed to deploy to CurseForge: %v", err)
+		}
+		githubactions.Infof("Successfully deployed to CurseForge project: %s", cfg.CurseForge.ProjectID)
 	}
 
 	if discWebhookURL != "" {

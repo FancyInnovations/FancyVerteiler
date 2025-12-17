@@ -7,6 +7,7 @@ This action allows you to push version updates of Minecraft or Hytale plugins to
 Supported Minecraft plugin platforms:
 - [FancySpaces](https://fancyspaces.net/)
 - [Modrinth](https://modrinth.com/)
+- [CurseForge](https://www.curseforge.com/)
 
 Supported Hytale plugin platforms:
 - [FancySpaces](https://fancyspaces.net/)
@@ -26,6 +27,7 @@ Include the following in your GitHub Actions workflow:
     commit_message: "see example for git integration below"
     fancyspaces_api_key: ${{ secrets.FANCYSPACES_API_KEY }}
     modrinth_api_key: ${{ secrets.MODRINTH_API_KEY }}
+    curseforge_api_key: ${{ secrets.CURSEFORGE_API_KEY }}
     orbis_api_key: ${{ secrets.ORBIS_API_KEY }}
     modtale_api_key: ${{ secrets.MODTALE_API_KEY }}
     discord_webhook_url: ${{ secrets.DISCORD_WEBHOOK_URL }}
@@ -37,6 +39,7 @@ Inputs:
 - `commit_message` (optional): The commit message to replace in the changelog.
 - `fancyspaces_api_key` is only required if you want to publish to FancySpaces.
 - `modrinth_api_key` is only required if you want to publish to Modrinth.
+- `curseforge_api_key` is only required if you want to publish to CurseForge.
 - `orbis_api_key` is only required if you want to publish to Orbis.
 - `modtale_api_key` is only required if you want to publish to Modtale.
 - `discord_webhook_url` is only required if you want to send notifications to Discord.
@@ -60,6 +63,12 @@ Example config:
     "channel": "release",
     "loaders": [ "paper", "folia" ],
     "featured": true
+  },
+  "curseforge": {
+    "project_id": "123456",
+    "type": "plugin",
+    "game_versions": [ "1.21.10", "1.21.11" ],
+    "release_type": "release"
   },
   "orbis": {
     "resource_id": "1234",
@@ -92,6 +101,7 @@ Full example with git integration:
           commit_sha: ${{ steps.last_commit.outputs.commit_sha }}
           commit_message: ${{ steps.last_commit.outputs.commit_msg }}
           modrinth_api_key: ${{ secrets.MODRINTH_API_KEY }}
+          curseforge_api_key: ${{ secrets.CURSEFORGE_API_KEY }}
           discord_webhook_url: ${{ secrets.DISCORD_WEBHOOK_URL }}
 
 ```

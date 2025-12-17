@@ -23,6 +23,7 @@ type DeploymentConfig struct {
 	Modrinth    *Modrinth    `json:"modrinth,omitempty"`
 	Orbis       *Orbis       `json:"orbis,omitempty"`
 	Modtale     *Modtale     `json:"modtale,omitempty"`
+	CurseForge  *CurseForge  `json:"curseforge,omitempty"`
 }
 
 type FancySpaces struct {
@@ -49,6 +50,24 @@ type Orbis struct {
 type Modtale struct {
 	ProjectID    string   `json:"project_id"`
 	GameVersions []string `json:"game_versions"`
+}
+
+type CurseForge struct {
+	ProjectID    string                `json:"project_id"`
+	GameVersions []interface{}         `json:"game_versions"` // Can be int or string
+	ReleaseType  string                `json:"release_type"`
+	Type         string                `json:"type,omitempty"`   // "plugin" or "mod" (defaults to "plugin")
+	Loader       string                `json:"loader,omitempty"` // "fabric", "forge", "neoforge", "quilt" (required for mods)
+	Relations    *CurseForgeRelations  `json:"relations,omitempty"`
+}
+
+type CurseForgeRelations struct {
+	Projects []CurseForgeProjectRelation `json:"projects"`
+}
+
+type CurseForgeProjectRelation struct {
+	Slug string `json:"slug"`
+	Type string `json:"type"`
 }
 
 func (d *DeploymentConfig) PluginJar() ([]byte, error) {
