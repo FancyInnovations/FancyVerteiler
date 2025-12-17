@@ -56,6 +56,8 @@ type CurseForge struct {
 	ProjectID         string                   `json:"project_id"`
 	GameVersions      []interface{}            `json:"game_versions"` // Can be int or string
 	ReleaseType       string                   `json:"release_type"`
+	Type              string                   `json:"type,omitempty"`   // "plugin" or "mod"
+	Loader            string                   `json:"loader,omitempty"` // For mods: "fabric", "forge", "neoforge", "quilt"
 	Relations         *CurseForgeRelations     `json:"relations,omitempty"`
 }
 

@@ -110,7 +110,22 @@ func (s *Service) metadataJson(cfg *config.DeploymentConfig) (string, error) {
 	cl = strings.ReplaceAll(cl, "%COMMIT_MESSAGE%", s.git.CommitMessage())
 
 	// Convert game versions (supports both int IDs and string versions)
-	gameVersionIDs := make([]int, 0, len(cfg.CurseForge.GameVersions))
+	gameVersionIDs := make([]int, 0, len(cfg.CurseForge.GameVersions)+1)
+	
+	// Get the appropriate loader ID based on project type
+	projectType := cfg.CurseForge.Type
+	if projectType == "" {
+		projectType = "plugin" // Default to plugin for backward compatibility
+	}
+	
+	loaderID, err := GetLoaderID(projectType, cfg.CurseForge.Loader)
+	if err != nil {
+		return "", err
+	}
+	
+	// Add loader ID first
+	gameVersionIDs = append(gameVersionIDs, loaderID)
+	
 	for _, v := range cfg.CurseForge.GameVersions {
 		switch val := v.(type) {
 		case float64: // JSON numbers are parsed as float64

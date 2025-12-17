@@ -1,5 +1,16 @@
 package curseforge
 
+import "fmt"
+
+// Loader IDs for CurseForge
+const (
+	BukkitLoaderID = 5  // Bukkit/Spigot/Paper plugins
+	FabricLoaderID = 4  // Fabric mods
+	ForgeLoaderID  = 1  // Forge mods
+	NeoForgeLoaderID = 6 // NeoForge mods
+	QuiltLoaderID  = 5  // Quilt mods (note: may conflict with Bukkit, verify if needed)
+)
+
 // minecraftVersionToID maps Minecraft version strings to CurseForge game version IDs
 var minecraftVersionToID = map[string]int{
 	"1.21":     10407,
@@ -33,10 +44,33 @@ var minecraftVersionToID = map[string]int{
 }
 
 // ConvertVersionString converts a Minecraft version string to CurseForge ID
-// If the input is already a valid ID (numeric), returns it as-is
 func ConvertVersionString(version string) (int, bool) {
 	if id, exists := minecraftVersionToID[version]; exists {
 		return id, true
 	}
 	return 0, false
+}
+
+// GetLoaderID returns the appropriate loader ID based on the project type and loader
+func GetLoaderID(projectType, loader string) (int, error) {
+	if projectType == "plugin" || projectType == "" { // Default to plugin for backward compatibility
+		return BukkitLoaderID, nil
+	}
+	
+	if projectType == "mod" {
+		switch loader {
+		case "fabric":
+			return FabricLoaderID, nil
+		case "forge":
+			return ForgeLoaderID, nil
+		case "neoforge":
+			return NeoForgeLoaderID, nil
+		case "quilt":
+			return QuiltLoaderID, nil
+		default:
+			return 0, fmt.Errorf("unknown mod loader: %s (supported: fabric, forge, neoforge, quilt)", loader)
+		}
+	}
+	
+	return 0, fmt.Errorf("unknown project type: %s (supported: plugin, mod)", projectType)
 }
