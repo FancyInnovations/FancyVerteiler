@@ -109,15 +109,27 @@ func (s *Service) metadataJson(cfg *config.DeploymentConfig) (string, error) {
 	cl = strings.ReplaceAll(cl, "%COMMIT_HASH%", s.git.CommitSHA())
 	cl = strings.ReplaceAll(cl, "%COMMIT_MESSAGE%", s.git.CommitMessage())
 
+	// Convert config relations to API relations
+	var relations CreateVersionRelations
+	if cfg.CurseForge.Relations != nil && len(cfg.CurseForge.Relations.Projects) > 0 {
+		relations.Projects = make([]ProjectRelation, len(cfg.CurseForge.Relations.Projects))
+		for i, proj := range cfg.CurseForge.Relations.Projects {
+			relations.Projects[i] = ProjectRelation{
+				Slug: proj.Slug,
+				Type: proj.Type,
+			}
+		}
+	} else {
+		relations.Projects = []ProjectRelation{}
+	}
+
 	req := CreateVersionReq{
 		Changelog:     cl,
 		ChangelogType: "markdown",
 		DisplayName:   ver,
 		GameVersions:  cfg.CurseForge.GameVersions,
 		ReleaseType:   cfg.CurseForge.ReleaseType,
-		Relations: CreateVersionRelations{
-			Projects: []ProjectRelation{},
-		},
+		Relations:     relations,
 	}
 
 	data, err := json.Marshal(req)

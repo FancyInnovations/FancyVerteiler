@@ -53,9 +53,19 @@ type Modtale struct {
 }
 
 type CurseForge struct {
-	ProjectID    string `json:"project_id"`
-	GameVersions []int  `json:"game_versions"`
-	ReleaseType  string `json:"release_type"`
+	ProjectID    string                   `json:"project_id"`
+	GameVersions []int                    `json:"game_versions"`
+	ReleaseType  string                   `json:"release_type"`
+	Relations    *CurseForgeRelations     `json:"relations,omitempty"`
+}
+
+type CurseForgeRelations struct {
+	Projects []CurseForgeProjectRelation `json:"projects"`
+}
+
+type CurseForgeProjectRelation struct {
+	Slug string `json:"slug"`
+	Type string `json:"type"`
 }
 
 func (d *DeploymentConfig) PluginJar() ([]byte, error) {
