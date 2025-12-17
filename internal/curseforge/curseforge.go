@@ -109,6 +109,25 @@ func (s *Service) metadataJson(cfg *config.DeploymentConfig) (string, error) {
 	cl = strings.ReplaceAll(cl, "%COMMIT_HASH%", s.git.CommitSHA())
 	cl = strings.ReplaceAll(cl, "%COMMIT_MESSAGE%", s.git.CommitMessage())
 
+	// Convert game versions (supports both int IDs and string versions)
+	gameVersionIDs := make([]int, 0, len(cfg.CurseForge.GameVersions))
+	for _, v := range cfg.CurseForge.GameVersions {
+		switch val := v.(type) {
+		case float64: // JSON numbers are parsed as float64
+			gameVersionIDs = append(gameVersionIDs, int(val))
+		case int:
+			gameVersionIDs = append(gameVersionIDs, val)
+		case string:
+			if id, ok := ConvertVersionString(val); ok {
+				gameVersionIDs = append(gameVersionIDs, id)
+			} else {
+				return "", fmt.Errorf("unknown Minecraft version: %s", val)
+			}
+		default:
+			return "", fmt.Errorf("invalid game version type: %T", v)
+		}
+	}
+
 	// Convert config relations to API relations
 	var relations CreateVersionRelations
 	if cfg.CurseForge.Relations != nil && len(cfg.CurseForge.Relations.Projects) > 0 {
@@ -127,7 +146,7 @@ func (s *Service) metadataJson(cfg *config.DeploymentConfig) (string, error) {
 		Changelog:     cl,
 		ChangelogType: "markdown",
 		DisplayName:   ver,
-		GameVersions:  cfg.CurseForge.GameVersions,
+		GameVersions:  gameVersionIDs,
 		ReleaseType:   cfg.CurseForge.ReleaseType,
 		Relations:     relations,
 	}

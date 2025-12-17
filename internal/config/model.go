@@ -53,10 +53,10 @@ type Modtale struct {
 }
 
 type CurseForge struct {
-	ProjectID    string                   `json:"project_id"`
-	GameVersions []int                    `json:"game_versions"`
-	ReleaseType  string                   `json:"release_type"`
-	Relations    *CurseForgeRelations     `json:"relations,omitempty"`
+	ProjectID         string                   `json:"project_id"`
+	GameVersions      []interface{}            `json:"game_versions"` // Can be int or string
+	ReleaseType       string                   `json:"release_type"`
+	Relations         *CurseForgeRelations     `json:"relations,omitempty"`
 }
 
 type CurseForgeRelations struct {
