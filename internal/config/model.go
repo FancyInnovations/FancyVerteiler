@@ -53,12 +53,12 @@ type Modtale struct {
 }
 
 type CurseForge struct {
-	ProjectID         string                   `json:"project_id"`
-	GameVersions      []interface{}            `json:"game_versions"` // Can be int or string
-	ReleaseType       string                   `json:"release_type"`
-	Type              string                   `json:"type,omitempty"`   // "plugin" or "mod"
-	Loader            string                   `json:"loader,omitempty"` // For mods: "fabric", "forge", "neoforge", "quilt"
-	Relations         *CurseForgeRelations     `json:"relations,omitempty"`
+	ProjectID    string                `json:"project_id"`
+	GameVersions []interface{}         `json:"game_versions"` // Can be int or string
+	ReleaseType  string                `json:"release_type"`
+	Type         string                `json:"type,omitempty"`   // "plugin" or "mod" (defaults to "plugin")
+	Loader       string                `json:"loader,omitempty"` // "fabric", "forge", "neoforge", "quilt" (required for mods)
+	Relations    *CurseForgeRelations  `json:"relations,omitempty"`
 }
 
 type CurseForgeRelations struct {

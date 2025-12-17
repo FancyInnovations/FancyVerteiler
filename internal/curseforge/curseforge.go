@@ -109,23 +109,15 @@ func (s *Service) metadataJson(cfg *config.DeploymentConfig) (string, error) {
 	cl = strings.ReplaceAll(cl, "%COMMIT_HASH%", s.git.CommitSHA())
 	cl = strings.ReplaceAll(cl, "%COMMIT_MESSAGE%", s.git.CommitMessage())
 
+	// Determine project type (default to "plugin" for backward compatibility)
+	projectType := "plugin"
+	if cfg.CurseForge.Type != "" {
+		projectType = cfg.CurseForge.Type
+	}
+
 	// Convert game versions (supports both int IDs and string versions)
-	gameVersionIDs := make([]int, 0, len(cfg.CurseForge.GameVersions)+1)
-	
-	// Get the appropriate loader ID based on project type
-	projectType := cfg.CurseForge.Type
-	if projectType == "" {
-		projectType = "plugin" // Default to plugin for backward compatibility
-	}
-	
-	loaderID, err := GetLoaderID(projectType, cfg.CurseForge.Loader)
-	if err != nil {
-		return "", err
-	}
-	
-	// Add loader ID first
-	gameVersionIDs = append(gameVersionIDs, loaderID)
-	
+	gameVersionIDs := make([]int, 0, len(cfg.CurseForge.GameVersions))
+
 	for _, v := range cfg.CurseForge.GameVersions {
 		switch val := v.(type) {
 		case float64: // JSON numbers are parsed as float64
@@ -133,14 +125,29 @@ func (s *Service) metadataJson(cfg *config.DeploymentConfig) (string, error) {
 		case int:
 			gameVersionIDs = append(gameVersionIDs, val)
 		case string:
-			if id, ok := ConvertVersionString(val); ok {
+			if id, ok := ConvertVersionString(val, projectType); ok {
 				gameVersionIDs = append(gameVersionIDs, id)
 			} else {
-				return "", fmt.Errorf("unknown Minecraft version: %s", val)
+				return "", fmt.Errorf("unknown Minecraft version for %s: %s", projectType, val)
 			}
 		default:
 			return "", fmt.Errorf("invalid game version type: %T", v)
 		}
+	}
+
+	// For mods, prepend the appropriate loader ID
+	if projectType == "mod" {
+		if cfg.CurseForge.Loader == "" {
+			return "", fmt.Errorf("loader must be specified for mod projects (fabric, forge, neoforge, or quilt)")
+		}
+
+		loaderID, err := GetLoaderID(projectType, cfg.CurseForge.Loader)
+		if err != nil {
+			return "", err
+		}
+
+		// Prepend loader ID to game versions array
+		gameVersionIDs = append([]int{loaderID}, gameVersionIDs...)
 	}
 
 	req := CreateVersionReq{
