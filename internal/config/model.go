@@ -63,9 +63,9 @@ type CurseForge struct {
 }
 
 type UnifiedHytale struct {
-	ProjectID      string `json:"project_id"`
-	GameVersions   []string
-	ReleaseChannel string `json:"release_channel"`
+	ProjectID      string   `json:"project_id"`
+	GameVersions   []string `json:"game_versions"`
+	ReleaseChannel string   `json:"release_channel"`
 }
 
 type CurseForgeRelations struct {
