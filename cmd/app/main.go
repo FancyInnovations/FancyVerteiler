@@ -38,7 +38,6 @@ func main() {
 
 	slog.Info("Reading config", slog.String("path", configPath))
 
-	config.BasePath = "/github/workspace"
 	cfg, err := config.ReadFromPath(configPath)
 	if err != nil {
 		slog.Error("Failed to read config", sloki.WrapError(err))
