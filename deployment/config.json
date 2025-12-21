@@ -1,12 +1,24 @@
 {
   "project_name": "FancyVerteiler",
-  "plugin_jar_path": "/deployment/FancyVerteiler",
+  "plugin_jar_path": "/dist/FancyVerteiler-windows-amd64/FancyVerteiler-windows-amd64.exe",
   "changelog_path": "/deployment/CHANGELOG.md",
   "version_path": "/deployment/VERSION",
   "fancyspaces": {
     "space_id": "fv",
     "platform": "executable",
     "channel": "release",
-    "supported_versions": [ "linux x86" ]
+    "supported_versions": [
+      "windows-amd64",
+      "linux-amd64",
+      "linux-arm64",
+      "darwin-amd64",
+      "darwin-arm64"
+    ],
+    "additional_files": {
+      "linux-amd64": "/dist/FancyVerteiler-linux-amd64/FancyVerteiler-linux-amd64",
+      "linux-arm64": "/dist/FancyVerteiler-linux-arm64/FancyVerteiler-linux-arm64",
+      "darwin-amd64": "/dist/FancyVerteiler-darwin-amd64/FancyVerteiler-darwin-amd64",
+      "darwin-arm64": "/dist/FancyVerteiler-darwin-arm64/FancyVerteiler-darwin-arm64"
+    }
   }
 }

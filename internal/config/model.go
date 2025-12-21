@@ -28,10 +28,11 @@ type DeploymentConfig struct {
 }
 
 type FancySpaces struct {
-	SpaceID           string   `json:"space_id"`
-	Platform          string   `json:"platform"`
-	Channel           string   `json:"channel"`
-	SupportedVersions []string `json:"supported_versions"`
+	SpaceID           string            `json:"space_id"`
+	Platform          string            `json:"platform"`
+	Channel           string            `json:"channel"`
+	SupportedVersions []string          `json:"supported_versions"`
+	AdditionalFiles   map[string]string `json:"additional_files,omitempty"` // name -> path
 }
 
 type Modrinth struct {

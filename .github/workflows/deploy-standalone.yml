@@ -4,33 +4,57 @@ on:
   workflow_dispatch:
 
 jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        goos: [ linux, windows, darwin ]
+        goarch: [ amd64, arm64 ]
+        exclude:
+          - goos: windows
+            goarch: arm64
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.25.5"
+
+      - name: Build
+        env:
+          GOOS: ${{ matrix.goos }}
+          GOARCH: ${{ matrix.goarch }}
+        run: |
+          mkdir -p dist
+          EXT=""
+          if [ "$GOOS" = "windows" ]; then EXT=".exe"; fi
+          
+          go build -trimpath \
+            -ldflags="-s -w" \
+            -o dist/FancyVerteiler-${GOOS}-${GOARCH}${EXT}
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: FancyVerteiler-${{ matrix.goos }}-${{ matrix.goarch }}
+          path: dist/*
+
   deploy:
+    needs: build
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Cache Gradle dependencies
-        uses: actions/cache@v4
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
         with:
-          path: ~/.gradle
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
-
-      - name: Set up Go
-        uses: actions/setup-go@v5
-        with:
-          go-version: 1.25.5
-          check-latest: true
-          cache-dependency-path: "**/*.sum"
-
-      - name: Install dependencies
-        run: go mod tidy
-
-      - name: Build
-        run: go build -o deployment/FancyVerteiler cmd/app/main.go
+          path: dist
 
       - name: Get last commit SHA and message
         id: last_commit

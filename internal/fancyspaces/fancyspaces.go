@@ -35,6 +35,14 @@ func (s *Service) Deploy(cfg *config.DeploymentConfig) error {
 		return fmt.Errorf("failed to upload file: %w", err)
 	}
 
+	if cfg.FancySpaces.AdditionalFiles != nil {
+		for fileName, filePath := range cfg.FancySpaces.AdditionalFiles {
+			if err := s.uploadAdditionalFile(cfg, fileName, filePath); err != nil {
+				return fmt.Errorf("failed to upload additional file %s: %w", fileName, err)
+			}
+		}
+	}
+
 	return nil
 }
 
@@ -108,6 +116,46 @@ func (s *Service) uploadFile(cfg *config.DeploymentConfig) error {
 
 	url := fmt.Sprintf("https://fancyspaces.net/api/v1/spaces/%s/versions/%s/files/%s", cfg.FancySpaces.SpaceID, ver, pluginJarName)
 	reqBody, err := http.NewRequest("POST", url, bytes.NewReader(pluginJarData))
+	if err != nil {
+		return err
+	}
+	reqBody.Header.Set("Authorization", s.apiKey)
+	reqBody.Header.Set("User-Agent", "FancyVerteiler (https://github.com/FancyInnovations/FancyVerteiler)")
+
+	resp, err := s.hc.Do(reqBody)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusCreated {
+		return fmt.Errorf("unexpected status code: %d", resp.StatusCode)
+	}
+
+	return nil
+}
+
+func (s *Service) uploadAdditionalFile(cfg *config.DeploymentConfig, fileName, filePath string) error {
+	ver, err := cfg.Version()
+	if err != nil {
+		return err
+	}
+
+	fullPath := config.BasePath + filePath
+	fullPath = strings.ReplaceAll(fullPath, "%VERSION%", ver)
+	file, err := os.Open(fullPath)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	fileData, err := os.ReadFile(fullPath)
+	if err != nil {
+		return err
+	}
+
+	url := fmt.Sprintf("https://fancyspaces.net/api/v1/spaces/%s/versions/%s/files/%s", cfg.FancySpaces.SpaceID, ver, fileName)
+	reqBody, err := http.NewRequest("POST", url, bytes.NewReader(fileData))
 	if err != nil {
 		return err
 	}
