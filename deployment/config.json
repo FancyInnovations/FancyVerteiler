@@ -15,10 +15,10 @@
       "darwin-arm64"
     ],
     "additional_files": {
-      "linux-amd64": "/dist/FancyVerteiler-linux-amd64/FancyVerteiler-linux-amd64",
-      "linux-arm64": "/dist/FancyVerteiler-linux-arm64/FancyVerteiler-linux-arm64",
-      "darwin-amd64": "/dist/FancyVerteiler-darwin-amd64/FancyVerteiler-darwin-amd64",
-      "darwin-arm64": "/dist/FancyVerteiler-darwin-arm64/FancyVerteiler-darwin-arm64"
+      "FancyVerteiler-linux-amd64": "/dist/FancyVerteiler-linux-amd64/FancyVerteiler-linux-amd64",
+      "FancyVerteiler-linux-arm64": "/dist/FancyVerteiler-linux-arm64/FancyVerteiler-linux-arm64",
+      "FancyVerteiler-darwin-amd64": "/dist/FancyVerteiler-darwin-amd64/FancyVerteiler-darwin-amd64",
+      "FancyVerteiler-darwin-arm64": "/dist/FancyVerteiler-darwin-arm64/FancyVerteiler-darwin-arm64"
     }
   }
 }
