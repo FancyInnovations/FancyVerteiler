@@ -46,6 +46,7 @@ func (s *Service) Deploy(cfg *config.DeploymentConfig) error {
 	_ = writer.WriteField("versionNumber", ver)
 	_ = writer.WriteField("gameVersions", strings.Join(cfg.Modtale.GameVersions, ","))
 	_ = writer.WriteField("changelog", cl)
+	_ = writer.WriteField("channel", cfg.Modtale.Channel)
 
 	pluginJarPath := config.BasePath + cfg.PluginJarPath
 	pluginJarPath = strings.ReplaceAll(pluginJarPath, "%VERSION%", ver)
@@ -71,7 +72,7 @@ func (s *Service) Deploy(cfg *config.DeploymentConfig) error {
 		return err
 	}
 
-	req, err := http.NewRequest("POST", "https://modtale.net/api/projects/"+cfg.Modtale.ProjectID+"/versions", body)
+	req, err := http.NewRequest("POST", "https://api.modtale.net/api/v1/projects/"+cfg.Modtale.ProjectID+"/versions", body)
 	if err != nil {
 		return err
 	}

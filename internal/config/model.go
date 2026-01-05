@@ -52,6 +52,7 @@ type Orbis struct {
 type Modtale struct {
 	ProjectID    string   `json:"project_id"`
 	GameVersions []string `json:"game_versions"`
+	Channel      string   `json:"channel"`
 }
 
 type CurseForge struct {

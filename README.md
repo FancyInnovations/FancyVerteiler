@@ -82,6 +82,7 @@ Example config:
   },
   "modtale": {
     "project_id": "abcdef123456",
+    "channel": "RELEASE",
     "game_versions": [ "2026.12.02.12312313" ]
   },
   "unifiedhytale": {
