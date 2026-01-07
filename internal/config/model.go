@@ -25,6 +25,7 @@ type DeploymentConfig struct {
 	Modtale       *Modtale       `json:"modtale,omitempty"`
 	CurseForge    *CurseForge    `json:"curseforge,omitempty"`
 	UnifiedHytale *UnifiedHytale `json:"unifiedhytale,omitempty"`
+	Hytahub       *Hytahub       `json:"hytahub,omitempty"`
 }
 
 type FancySpaces struct {
@@ -68,6 +69,11 @@ type UnifiedHytale struct {
 	ProjectID      string   `json:"project_id"`
 	GameVersions   []string `json:"game_versions"`
 	ReleaseChannel string   `json:"release_channel"`
+}
+
+type Hytahub struct {
+	Slug    string `json:"slug"`
+	Channel string `json:"channel"` // release, beta, alpha
 }
 
 type CurseForgeRelations struct {

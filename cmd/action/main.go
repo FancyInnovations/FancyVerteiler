@@ -6,6 +6,7 @@ import (
 	"FancyVerteiler/internal/discord"
 	"FancyVerteiler/internal/fancyspaces"
 	"FancyVerteiler/internal/git"
+	"FancyVerteiler/internal/hytahub"
 	"FancyVerteiler/internal/modrinth"
 	"FancyVerteiler/internal/modtale"
 	"FancyVerteiler/internal/orbis"
@@ -59,6 +60,9 @@ func main() {
 	}
 	if cfg.UnifiedHytale != nil {
 		deployToUnifiedHytale(cfg, gs)
+	}
+	if cfg.Hytahub != nil {
+		deployToHytahub(cfg, gs)
 	}
 
 	if discWebhookURL != "" {
@@ -171,4 +175,21 @@ func deployToUnifiedHytale(cfg *config.DeploymentConfig, gs *git.Service) {
 		return
 	}
 	githubactions.Infof("Successfully deployed to UnifiedHytale project: %s", cfg.UnifiedHytale.ProjectID)
+}
+
+func deployToHytahub(cfg *config.DeploymentConfig, gs *git.Service) {
+	apiKey := githubactions.GetInput("hytahub_api_key")
+	if apiKey == "" {
+		githubactions.Errorf("Missing input 'hytahub_api_key'")
+		return
+	}
+
+	githubactions.Infof("Deploying to Hytahub project: %s", cfg.Hytahub.Slug)
+
+	mt := hytahub.New(apiKey, gs)
+	if err := mt.Deploy(cfg); err != nil {
+		githubactions.Errorf("Failed to deploy to Hytahub: %v", err)
+		return
+	}
+	githubactions.Infof("Successfully deployed to Hytahub project: %s", cfg.Hytahub.Slug)
 }

@@ -34,6 +34,9 @@ inputs:
   unifiedhytale_api_key:
     description: "UnifiedHytale API key for deployment"
     required: false
+  hytahub_api_key:
+    description: "Hytahub API key for deployment"
+    required: false
 runs:
   using: "docker"
   image: "Dockerfile"

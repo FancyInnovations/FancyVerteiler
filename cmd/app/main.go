@@ -6,6 +6,7 @@ import (
 	"FancyVerteiler/internal/discord"
 	"FancyVerteiler/internal/fancyspaces"
 	"FancyVerteiler/internal/git"
+	"FancyVerteiler/internal/hytahub"
 	"FancyVerteiler/internal/modrinth"
 	"FancyVerteiler/internal/modtale"
 	"FancyVerteiler/internal/orbis"
@@ -29,6 +30,7 @@ const (
 	modtaleApiKeyEnv       = "FV_MODTALE_API_KEY"
 	curseforgeApiKeyEnv    = "FV_CURSEFORGE_API_KEY"
 	unifiedhytaleApiKeyEnv = "FV_UNIFIEDHytale_API_KEY"
+	hytahubApiKeyEnv       = "FV_HYTAHUB_API_KEY"
 )
 
 func main() {
@@ -73,6 +75,9 @@ func main() {
 	}
 	if cfg.UnifiedHytale != nil {
 		deployToUnifiedHytale(cfg, gs)
+	}
+	if cfg.Hytahub != nil {
+		deployToHytahub(cfg, gs)
 	}
 
 	if discWebhookURL != "" {
@@ -161,4 +166,17 @@ func deployToUnifiedHytale(cfg *config.DeploymentConfig, gs *git.Service) {
 		return
 	}
 	slog.Info("Successfully deployed to UnifiedHytale", slog.String("project_id", cfg.UnifiedHytale.ProjectID))
+}
+
+func deployToHytahub(cfg *config.DeploymentConfig, gs *git.Service) {
+	apiKey := env.MustGetStr(hytahubApiKeyEnv)
+
+	slog.Info("Deploying to Hytahub channel", slog.String("slug", cfg.Hytahub.Slug))
+
+	ht := hytahub.New(apiKey, gs)
+	if err := ht.Deploy(cfg); err != nil {
+		slog.Error("Failed to deploy to Hytahub", sloki.WrapError(err))
+		return
+	}
+	slog.Info("Successfully deployed to Hytahub", slog.String("slug", cfg.Hytahub.Slug))
 }

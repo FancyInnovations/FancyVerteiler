@@ -14,6 +14,7 @@ Supported Hytale plugin platforms:
 - [Orbis](https://orbis.place/)
 - [Modtale](https://modtale.net/)
 - [UnifiedHytale](https://www.unifiedhytale.com)
+- [HytaHub](https://hytahub.com/)
 
 Send notifications to a Discord channel via webhook.
 
@@ -34,6 +35,7 @@ Include the following in your GitHub Actions workflow:
     orbis_api_key: ${{ secrets.ORBIS_API_KEY }}
     modtale_api_key: ${{ secrets.MODTALE_API_KEY }}
     unifiedhytale_api_key: ${{ secrets.UNIFIEDHYTALE_API_KEY }}
+    hytahub_api_key: ${{ secrets.HYTAHUB_API_KEY }}
     discord_webhook_url: ${{ secrets.DISCORD_WEBHOOK_URL }}
 ```
 
@@ -47,6 +49,7 @@ Inputs:
 - `orbis_api_key` is only required if you want to publish to Orbis.
 - `modtale_api_key` is only required if you want to publish to Modtale.
 - `unifiedhytale_api_key` is only required if you want to publish to UnifiedHytale.
+- `hytahub_api_key` is only required if you want to publish to HytaHub.
 - `discord_webhook_url` is only required if you want to send notifications to Discord.
 
 Example config:
@@ -89,6 +92,10 @@ Example config:
     "project_id": "abcdef123456",
     "game_versions": [ "2026.12.02.12312313" ],
     "release_channel": "release"
+  },
+  "hytahub": {
+    "slug": "mymode",
+    "channel": "release"
   }
 }
 ```
