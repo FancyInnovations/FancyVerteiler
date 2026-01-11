@@ -62,7 +62,6 @@ func (s *Service) createVersion(cfg *config.DeploymentConfig) (string, error) {
 
 	req := CreateVersionReq{
 		VersionNumber:              ver,
-		Name:                       ver,
 		Channel:                    cfg.Orbis.Channel,
 		CompatibleHytaleVersionIds: cfg.Orbis.CompatibleHytaleVersionIds,
 	}
@@ -95,12 +94,12 @@ func (s *Service) createVersion(cfg *config.DeploymentConfig) (string, error) {
 		return "", fmt.Errorf("unexpected status code: %d, body: %s", resp.StatusCode, string(body))
 	}
 
-	var respVer Version
+	var respVer VersionResp
 	if err := json.NewDecoder(resp.Body).Decode(&respVer); err != nil {
 		return "", err
 	}
 
-	return respVer.ID, nil
+	return respVer.Version.ID, nil
 }
 
 func (s *Service) updateChangelog(cfg *config.DeploymentConfig, versionID string) error {
@@ -195,7 +194,7 @@ func (s *Service) uploadFile(cfg *config.DeploymentConfig, versionID string) (st
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode != http.StatusOK {
+	if resp.StatusCode != http.StatusCreated {
 		respBody, err := io.ReadAll(resp.Body)
 		if err != nil {
 			return "", fmt.Errorf("failed to read body: %w", err)
@@ -204,12 +203,12 @@ func (s *Service) uploadFile(cfg *config.DeploymentConfig, versionID string) (st
 		return "", fmt.Errorf("unexpected status code: %d, body: %s", resp.StatusCode, string(respBody))
 	}
 
-	var respVerFile VersionFile
-	if err := json.NewDecoder(resp.Body).Decode(&respVerFile); err != nil {
+	var uploadFileResp UploadFileResp
+	if err := json.NewDecoder(resp.Body).Decode(&uploadFileResp); err != nil {
 		return "", err
 	}
 
-	return respVerFile.ID, nil
+	return uploadFileResp.File.ID, nil
 }
 
 func (s *Service) setPrimaryVersionFile(cfg *config.DeploymentConfig, versionId, fileId string) error {
@@ -236,7 +235,7 @@ func (s *Service) setPrimaryVersionFile(cfg *config.DeploymentConfig, versionId,
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode != http.StatusCreated {
+	if resp.StatusCode != http.StatusOK {
 		body, err := io.ReadAll(resp.Body)
 		if err != nil {
 			return fmt.Errorf("failed to read body: %w", err)
