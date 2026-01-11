@@ -47,6 +47,10 @@ func (s *Service) Deploy(cfg *config.DeploymentConfig) error {
 		return fmt.Errorf("failed to set primary file: %w", err)
 	}
 
+	if err := s.submitForReview(cfg, versionID); err != nil {
+		return fmt.Errorf("failed to submit for review: %w", err)
+	}
+
 	return nil
 }
 
@@ -116,7 +120,7 @@ func (s *Service) updateChangelog(cfg *config.DeploymentConfig, versionID string
 		return err
 	}
 
-	reqBody, err := http.NewRequest("POST", "https://api.orbis.place/resources/"+cfg.Orbis.ResourceID+"/versions/"+versionID+"/changelog", strings.NewReader(string(data)))
+	reqBody, err := http.NewRequest("PATCH", "https://api.orbis.place/resources/"+cfg.Orbis.ResourceID+"/versions/"+versionID+"/changelog", strings.NewReader(string(data)))
 	if err != nil {
 		return err
 	}
@@ -218,11 +222,37 @@ func (s *Service) setPrimaryVersionFile(cfg *config.DeploymentConfig, versionId,
 		return err
 	}
 
-	reqBody, err := http.NewRequest("POST", "https://api.orbis.place/resources/"+cfg.Orbis.ResourceID+"/versions/"+versionId+"/files/primary", strings.NewReader(string(data)))
+	reqBody, err := http.NewRequest("PATCH", "https://api.orbis.place/resources/"+cfg.Orbis.ResourceID+"/versions/"+versionId+"/files/primary", strings.NewReader(string(data)))
 	if err != nil {
 		return err
 	}
 	reqBody.Header.Set("Content-Type", "application/json")
+	reqBody.Header.Set("x-api-key", s.apiKey)
+	reqBody.Header.Set("User-Agent", "FancyVerteiler (https://github.com/FancyInnovations/FancyVerteiler)")
+
+	resp, err := s.hc.Do(reqBody)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusCreated {
+		body, err := io.ReadAll(resp.Body)
+		if err != nil {
+			return fmt.Errorf("failed to read body: %w", err)
+		}
+
+		return fmt.Errorf("unexpected status code: %d, body: %s", resp.StatusCode, string(body))
+	}
+
+	return nil
+}
+
+func (s *Service) submitForReview(cfg *config.DeploymentConfig, versionId string) error {
+	reqBody, err := http.NewRequest("POST", "https://api.orbis.place/resources/"+cfg.Orbis.ResourceID+"/versions/"+versionId+"/submit", nil)
+	if err != nil {
+		return err
+	}
 	reqBody.Header.Set("x-api-key", s.apiKey)
 	reqBody.Header.Set("User-Agent", "FancyVerteiler (https://github.com/FancyInnovations/FancyVerteiler)")
 
