@@ -80,8 +80,8 @@ Example config:
   },
   "orbis": {
     "resource_id": "1234",
-    "is_pre_release": false,
-    "hytale_version_ids": [ "2026.12.02.12312313" ]
+    "channel": "RELEASE",
+    "hytale_version_ids": [ "cmj1x42ef001k4qz9r03ojrpe" ]
   },
   "modtale": {
     "project_id": "abcdef123456",

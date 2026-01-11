@@ -1,10 +1,14 @@
 package orbis
 
 type CreateVersionReq struct {
-	Version          string   `json:"version"`
-	Changelog        string   `json:"changelog"`
-	HytaleVersionIDs []string `json:"hytaleVersionIds"`
-	IsPreRelease     bool     `json:"isPreRelease"`
+	VersionNumber              string   `json:"versionNumber"`
+	Name                       string   `json:"name"`
+	Channel                    string   `json:"channel"`
+	CompatibleHytaleVersionIds []string `json:"compatibleHytaleVersionIds"`
+}
+
+type UpdateChangelogReq struct {
+	Changelog string `json:"changelog"`
 }
 
 type SetPrimaryFileReq struct {

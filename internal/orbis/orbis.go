@@ -60,10 +60,10 @@ func (s *Service) createVersion(cfg *config.DeploymentConfig) (string, error) {
 	cl = strings.ReplaceAll(cl, "%COMMIT_MESSAGE%", s.git.CommitMessage())
 
 	req := CreateVersionReq{
-		Version:          ver,
-		Changelog:        cl,
-		HytaleVersionIDs: cfg.Orbis.HytaleVersionIDs,
-		IsPreRelease:     cfg.Orbis.IsPreRelease,
+		VersionNumber:              ver,
+		Name:                       ver,
+		Channel:                    cfg.Orbis.Channel,
+		CompatibleHytaleVersionIds: cfg.Orbis.CompatibleHytaleVersionIds,
 	}
 
 	data, err := json.Marshal(req)
