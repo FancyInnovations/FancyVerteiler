@@ -34,12 +34,16 @@ func (s *Service) Deploy(cfg *config.DeploymentConfig) error {
 		return fmt.Errorf("failed to create version: %w", err)
 	}
 
+	if err := s.updateChangelog(cfg, versionID); err != nil {
+		return fmt.Errorf("failed to update changelog: %w", err)
+	}
+
 	versionFileID, err := s.uploadFile(cfg, versionID)
 	if err != nil {
 		return fmt.Errorf("failed to upload file: %w", err)
 	}
 
-	if err := s.setPrimaryVersionFile(cfg, versionFileID); err != nil {
+	if err := s.setPrimaryVersionFile(cfg, versionID, versionFileID); err != nil {
 		return fmt.Errorf("failed to set primary file: %w", err)
 	}
 
@@ -51,13 +55,6 @@ func (s *Service) createVersion(cfg *config.DeploymentConfig) (string, error) {
 	if err != nil {
 		return "", err
 	}
-
-	cl, err := cfg.Changelog()
-	if err != nil {
-		return "", err
-	}
-	cl = strings.ReplaceAll(cl, "%COMMIT_HASH%", s.git.CommitSHA())
-	cl = strings.ReplaceAll(cl, "%COMMIT_MESSAGE%", s.git.CommitMessage())
 
 	req := CreateVersionReq{
 		VersionNumber:              ver,
@@ -100,6 +97,49 @@ func (s *Service) createVersion(cfg *config.DeploymentConfig) (string, error) {
 	}
 
 	return respVer.ID, nil
+}
+
+func (s *Service) updateChangelog(cfg *config.DeploymentConfig, versionID string) error {
+	cl, err := cfg.Changelog()
+	if err != nil {
+		return err
+	}
+	cl = strings.ReplaceAll(cl, "%COMMIT_HASH%", s.git.CommitSHA())
+	cl = strings.ReplaceAll(cl, "%COMMIT_MESSAGE%", s.git.CommitMessage())
+
+	req := UpdateChangelogReq{
+		Changelog: cl,
+	}
+
+	data, err := json.Marshal(req)
+	if err != nil {
+		return err
+	}
+
+	reqBody, err := http.NewRequest("POST", "https://api.orbis.place/resources/"+cfg.Orbis.ResourceID+"/versions/"+versionID+"/changelog", strings.NewReader(string(data)))
+	if err != nil {
+		return err
+	}
+	reqBody.Header.Set("Content-Type", "application/json")
+	reqBody.Header.Set("x-api-key", s.apiKey)
+	reqBody.Header.Set("User-Agent", "FancyVerteiler (https://github.com/FancyInnovations/FancyVerteiler)")
+
+	resp, err := s.hc.Do(reqBody)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		body, err := io.ReadAll(resp.Body)
+		if err != nil {
+			return fmt.Errorf("failed to read body: %w", err)
+		}
+
+		return fmt.Errorf("unexpected status code: %d, body: %s", resp.StatusCode, string(body))
+	}
+
+	return nil
 }
 
 func (s *Service) uploadFile(cfg *config.DeploymentConfig, versionID string) (string, error) {
@@ -168,12 +208,7 @@ func (s *Service) uploadFile(cfg *config.DeploymentConfig, versionID string) (st
 	return respVerFile.ID, nil
 }
 
-func (s *Service) setPrimaryVersionFile(cfg *config.DeploymentConfig, fileId string) error {
-	ver, err := cfg.Version()
-	if err != nil {
-		return err
-	}
-
+func (s *Service) setPrimaryVersionFile(cfg *config.DeploymentConfig, versionId, fileId string) error {
 	req := SetPrimaryFileReq{
 		FileID: fileId,
 	}
@@ -183,7 +218,7 @@ func (s *Service) setPrimaryVersionFile(cfg *config.DeploymentConfig, fileId str
 		return err
 	}
 
-	reqBody, err := http.NewRequest("POST", "https://api.orbis.place/resources/"+cfg.Orbis.ResourceID+"/versions/"+ver+"/files/primary", strings.NewReader(string(data)))
+	reqBody, err := http.NewRequest("POST", "https://api.orbis.place/resources/"+cfg.Orbis.ResourceID+"/versions/"+versionId+"/files/primary", strings.NewReader(string(data)))
 	if err != nil {
 		return err
 	}
