@@ -1,8 +1,12 @@
 # FancyVerteiler
 
-This action allows you to push version updates of Minecraft or Hytale plugins to multiple platforms at once.
+With FancyVerteiler, you can deploy Minecraft and Hytale plugins to multiple platforms at once via GitHub Actions or the standalone app.
 
 ## Features
+
+- Configure multiple platforms in a single JSON configuration file.
+- Automatically read version and changelog from files.
+- Send notifications to a Discord channel via webhook.
 
 Supported Minecraft plugin platforms:
 - [FancySpaces](https://fancyspaces.net/)
@@ -15,8 +19,6 @@ Supported Hytale plugin platforms:
 - [Modtale](https://modtale.net/)
 - [UnifiedHytale](https://www.unifiedhytale.com)
 - [HytaHub](https://hytahub.com/)
-
-Send notifications to a Discord channel via webhook.
 
 ## Usage
 
@@ -43,25 +45,18 @@ Inputs:
 - `config_path` (required): Path to the JSON configuration file for FancyVerteiler.
 - `commit_sha` (optional): The commit SHA to replace in the changelog.
 - `commit_message` (optional): The commit message to replace in the changelog.
-- `fancyspaces_api_key` is only required if you want to publish to FancySpaces.
-- `modrinth_api_key` is only required if you want to publish to Modrinth.
-- `curseforge_api_key` is only required if you want to publish to CurseForge.
-- `orbis_api_key` is only required if you want to publish to Orbis.
-- `modtale_api_key` is only required if you want to publish to Modtale.
-- `unifiedhytale_api_key` is only required if you want to publish to UnifiedHytale.
-- `hytahub_api_key` is only required if you want to publish to HytaHub.
-- `discord_webhook_url` is only required if you want to send notifications to Discord.
+- `<platform>_api_key` is only required if you want to publish to <platform>.
 
-Example config:
+Example json config:
 ```json
 {
   "project_name": "FancyNpcs",
-  "plugin_jar_path": "../../../../plugins/fancynpcs/build/libs/FancyNpcs-%VERSION%.jar",
-  "changelog_path": "../../../../plugins/fancynpcs/CHANGELOG.md",
-  "version_path": "../../../../plugins/fancynpcs/VERSION",
+  "plugin_jar_path": "./plugins/fancynpcs/build/libs/FancyNpcs-%VERSION%.jar",
+  "changelog_path": "./plugins/fancynpcs/CHANGELOG.md",
+  "version_path": "./plugins/fancynpcs/VERSION",
   "fancyspaces": {
-    "space_id": "fancyinnovations/fancynpcs",
-    "platform": "minecraft_plugin",
+    "space_id": "fn",
+    "platform": "paper",
     "channel": "release",
     "supported_versions": [ "1.21.10", "1.21.11" ]
   },
@@ -100,7 +95,7 @@ Example config:
 }
 ```
 
-Full example with git integration:
+To automatically get the last commit SHA and message from git, you can add the following steps before the FancyVerteiler step:
 ```yml
       - name: Get last commit SHA and message
         id: last_commit
@@ -119,7 +114,6 @@ Full example with git integration:
           commit_sha: ${{ steps.last_commit.outputs.commit_sha }}
           commit_message: ${{ steps.last_commit.outputs.commit_msg }}
           modrinth_api_key: ${{ secrets.MODRINTH_API_KEY }}
-          curseforge_api_key: ${{ secrets.CURSEFORGE_API_KEY }}
           discord_webhook_url: ${{ secrets.DISCORD_WEBHOOK_URL }}
 
 ```
@@ -137,3 +131,5 @@ Environment variables:
 - `FV_COMMIT_SHA`
 - `FV_MESSAGE_SHA`
 - `FV_{PLATFORM}_API_KEY` (example: `FV_FANCYSPACES_API_KEY`)
+
+You can download the latest version of the standalone app from [FancySpaces](http://fancyspaces.net/spaces/fancyverteiler).
