@@ -9,6 +9,7 @@ import (
 	"io"
 	"mime/multipart"
 	"net/http"
+	"net/textproto"
 	"os"
 	"path/filepath"
 	"strings"
@@ -63,7 +64,20 @@ func (s *Service) Deploy(cfg *config.DeploymentConfig) error {
 		return err
 	}
 
-	_ = writer.WriteField("versionUpload", data)
+	part, err := writer.CreatePart(
+		textproto.MIMEHeader{
+			"Content-Disposition": []string{`form-data; name="versionUpload"`},
+			"Content-Type":        []string{"application/json"},
+		},
+	)
+	if err != nil {
+		return err
+	}
+
+	_, err = part.Write([]byte(data))
+	if err != nil {
+		return err
+	}
 
 	ver, err := cfg.Version()
 	if err != nil {
@@ -99,7 +113,7 @@ func (s *Service) Deploy(cfg *config.DeploymentConfig) error {
 		return err
 	}
 
-	// Set the correct Content-Type with boundary
+	req.Header.Set("Content-Type", writer.FormDataContentType())
 	req.Header.Set("Authorization", "HangarAuth "+jwt)
 	req.Header.Set("User-Agent", "FancyVerteiler (https://github.com/FancyInnovations/FancyVerteiler)")
 
