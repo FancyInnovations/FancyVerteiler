@@ -29,7 +29,7 @@ func New(apiKey string, git *git.Service) *Service {
 }
 
 func (s *Service) GetJWT() (string, error) {
-	resp, err := http.Get("https://hangar.papermc.io/api/v1/authenticate?apiKey=" + s.apiKey)
+	resp, err := http.Post("https://hangar.papermc.io/api/v1/authenticate?apiKey="+s.apiKey, "text/plain", nil)
 	if err != nil {
 		return "", err
 	}
