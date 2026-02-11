@@ -21,6 +21,7 @@ type DeploymentConfig struct {
 
 	FancySpaces   *FancySpaces   `json:"fancyspaces,omitempty"`
 	Modrinth      *Modrinth      `json:"modrinth,omitempty"`
+	Hangar        *Hangar        `json:"hangar,omitempty"`
 	Orbis         *Orbis         `json:"orbis,omitempty"`
 	Modtale       *Modtale       `json:"modtale,omitempty"`
 	CurseForge    *CurseForge    `json:"curseforge,omitempty"`
@@ -42,6 +43,13 @@ type Modrinth struct {
 	Channel           string   `json:"channel"`
 	Loaders           []string `json:"loaders"`
 	Featured          bool     `json:"featured"`
+}
+
+type Hangar struct {
+	Author            string   `json:"author"`
+	ProjectID         string   `json:"project_id"`
+	SupportedVersions []string `json:"supported_versions"`
+	Channel           string   `json:"channel"`
 }
 
 type Orbis struct {

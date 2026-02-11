@@ -6,6 +6,7 @@ import (
 	"FancyVerteiler/internal/discord"
 	"FancyVerteiler/internal/fancyspaces"
 	"FancyVerteiler/internal/git"
+	"FancyVerteiler/internal/hangar"
 	"FancyVerteiler/internal/hytahub"
 	"FancyVerteiler/internal/modrinth"
 	"FancyVerteiler/internal/modtale"
@@ -26,6 +27,7 @@ const (
 
 	fancyspacesApiKeyEnv   = "FV_FANCYSPACES_API_KEY"
 	modrinthApiKeyEnv      = "FV_MODRINTH_API_KEY"
+	hangarApiKeyEnv        = "FV_HANGAR_API_KEY"
 	orbisApiKeyEnv         = "FV_ORBIS_API_KEY"
 	modtaleApiKeyEnv       = "FV_MODTALE_API_KEY"
 	curseforgeApiKeyEnv    = "FV_CURSEFORGE_API_KEY"
@@ -63,6 +65,9 @@ func main() {
 	}
 	if cfg.Modrinth != nil {
 		deployToModrinth(cfg, gs)
+	}
+	if cfg.Hangar != nil {
+		deployToHangar(cfg, gs)
 	}
 	if cfg.Orbis != nil {
 		deployToOrbis(cfg, gs)
@@ -114,6 +119,19 @@ func deployToModrinth(cfg *config.DeploymentConfig, gs *git.Service) {
 		return
 	}
 	slog.Info("Successfully deployed to Modrinth", slog.String("project_id", cfg.Modrinth.ProjectID))
+}
+
+func deployToHangar(cfg *config.DeploymentConfig, gs *git.Service) {
+	apiKey := env.MustGetStr(hangarApiKeyEnv)
+
+	slog.Info("Deploying to Hangar project", slog.String("project_id", cfg.Hangar.ProjectID))
+
+	hn := hangar.New(apiKey, gs)
+	if err := hn.Deploy(cfg); err != nil {
+		slog.Error("Failed to deploy to Hangar", sloki.WrapError(err))
+		return
+	}
+	slog.Info("Successfully deployed to Hangar", slog.String("project_id", cfg.Hangar.ProjectID))
 }
 
 func deployToOrbis(cfg *config.DeploymentConfig, gs *git.Service) {

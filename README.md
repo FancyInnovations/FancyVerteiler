@@ -33,6 +33,7 @@ Include the following in your GitHub Actions workflow:
     commit_message: "see example for git integration below"
     fancyspaces_api_key: ${{ secrets.FANCYSPACES_API_KEY }}
     modrinth_api_key: ${{ secrets.MODRINTH_API_KEY }}
+    hangar_api_key: ${{ secrets.HANGAR_API_KEY }}
     curseforge_api_key: ${{ secrets.CURSEFORGE_API_KEY }}
     orbis_api_key: ${{ secrets.ORBIS_API_KEY }}
     modtale_api_key: ${{ secrets.MODTALE_API_KEY }}
@@ -66,6 +67,12 @@ Example json config:
     "channel": "release",
     "loaders": [ "paper", "folia" ],
     "featured": true
+  },
+  "hangar": {
+    "author": "peter",
+    "project_id": "EeyAn23L",
+    "supported_versions": [ "1.21.10", "1.21.11" ],
+    "channel": "release"
   },
   "curseforge": {
     "project_id": "123456",

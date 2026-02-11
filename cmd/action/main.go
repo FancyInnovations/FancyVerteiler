@@ -6,6 +6,7 @@ import (
 	"FancyVerteiler/internal/discord"
 	"FancyVerteiler/internal/fancyspaces"
 	"FancyVerteiler/internal/git"
+	"FancyVerteiler/internal/hangar"
 	"FancyVerteiler/internal/hytahub"
 	"FancyVerteiler/internal/modrinth"
 	"FancyVerteiler/internal/modtale"
@@ -48,6 +49,9 @@ func main() {
 	}
 	if cfg.Modrinth != nil {
 		deployToModrinth(cfg, gs)
+	}
+	if cfg.Hangar != nil {
+		deployToHangar(cfg, gs)
 	}
 	if cfg.Orbis != nil {
 		deployToOrbis(cfg, gs)
@@ -107,6 +111,23 @@ func deployToModrinth(cfg *config.DeploymentConfig, gs *git.Service) {
 		return
 	}
 	githubactions.Infof("Successfully deployed to Modrinth project: %s", cfg.Modrinth.ProjectID)
+}
+
+func deployToHangar(cfg *config.DeploymentConfig, gs *git.Service) {
+	apiKey := githubactions.GetInput("hangar_api_key")
+	if apiKey == "" {
+		githubactions.Errorf("Missing input 'hangar_api_key'")
+		return
+	}
+
+	githubactions.Infof("Deploying to Hangar project: %s", cfg.Hangar.ProjectID)
+
+	hg := hangar.New(apiKey, gs)
+	if err := hg.Deploy(cfg); err != nil {
+		githubactions.Errorf("Failed to deploy to Hangar: %v", err)
+		return
+	}
+	githubactions.Infof("Successfully deployed to Hangar project: %s", cfg.Hangar.ProjectID)
 }
 
 func deployToOrbis(cfg *config.DeploymentConfig, gs *git.Service) {
