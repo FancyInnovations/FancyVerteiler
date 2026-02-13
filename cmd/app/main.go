@@ -22,6 +22,7 @@ import (
 const (
 	configPathEnv        = "FV_CONFIG_PATH" // required
 	discordWebhookUrlEnv = "FV_DISCORD_WEBHOOK_URL"
+	githubRepoURLEnv     = "FV_GITHUB_REPO_URL"
 	commitShaEnv         = "FV_COMMIT_SHA"
 	commitMessageEnv     = "FV_MESSAGE_SHA"
 
@@ -50,15 +51,10 @@ func main() {
 
 	slog.Info("Successfully read config", slog.String("project", cfg.ProjectName))
 
-	sha := os.Getenv(commitShaEnv)
-	if sha == "" {
-		sha = "unknown"
-	}
-	message := os.Getenv(commitMessageEnv)
-	if message == "" {
-		message = "unknown"
-	}
-	gs := git.New(sha, message)
+	githubRepoURL := env.MustGetStr(githubRepoURLEnv)
+	sha := env.MustGetStr(commitShaEnv)
+	message := env.MustGetStr(commitMessageEnv)
+	gs := git.New(githubRepoURL, sha, message)
 
 	if cfg.FancySpaces != nil {
 		deployToFancySpaces(cfg, gs)
@@ -86,7 +82,7 @@ func main() {
 	}
 
 	if discWebhookURL != "" {
-		disc := discord.New()
+		disc := discord.New(gs)
 		if err := disc.SendSuccessMessage(discWebhookURL, cfg); err != nil {
 			slog.Error("Failed to send Discord success message", sloki.WrapError(err))
 		} else {

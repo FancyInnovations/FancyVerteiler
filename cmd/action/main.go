@@ -35,8 +35,17 @@ func main() {
 	githubactions.Infof("Successfully read config for project: %s", cfg.ProjectName)
 
 	githubRepoURL := githubactions.GetInput("github_repo_url")
+	if githubRepoURL == "" {
+		githubactions.Fatalf("Missing input 'github_repo_url'")
+	}
 	sha := githubactions.GetInput("commit_sha")
+	if sha == "" {
+		githubactions.Fatalf("Missing input 'commit_sha'")
+	}
 	message := githubactions.GetInput("commit_message")
+	if message == "" {
+		githubactions.Fatalf("Missing input 'commit_message'")
+	}
 	gs := git.New(githubRepoURL, sha, message)
 
 	if cfg.FancySpaces != nil {
