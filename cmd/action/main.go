@@ -34,15 +34,10 @@ func main() {
 
 	githubactions.Infof("Successfully read config for project: %s", cfg.ProjectName)
 
+	githubRepoURL := githubactions.GetInput("github_repo_url")
 	sha := githubactions.GetInput("commit_sha")
-	if sha == "" {
-		sha = "unknown"
-	}
 	message := githubactions.GetInput("commit_message")
-	if message == "" {
-		message = "unknown"
-	}
-	gs := git.New(sha, message)
+	gs := git.New(githubRepoURL, sha, message)
 
 	if cfg.FancySpaces != nil {
 		deployToFancySpaces(cfg, gs)
@@ -70,7 +65,7 @@ func main() {
 	}
 
 	if discWebhookURL != "" {
-		disc := discord.New()
+		disc := discord.New(gs)
 		if err := disc.SendSuccessMessage(discWebhookURL, cfg); err != nil {
 			githubactions.Errorf("Failed to send Discord success message: %v", err)
 		} else {

@@ -11,6 +11,7 @@ With FancyVerteiler, you can deploy Minecraft and Hytale plugins to multiple pla
 Supported Minecraft plugin platforms:
 - [FancySpaces](https://fancyspaces.net/)
 - [Modrinth](https://modrinth.com/)
+- [Hangar](https://hangar.papermc.io/)
 - [CurseForge](https://www.curseforge.com/)
 
 Supported Hytale plugin platforms:

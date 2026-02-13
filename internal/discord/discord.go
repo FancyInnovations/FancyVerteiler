@@ -2,6 +2,7 @@ package discord
 
 import (
 	"FancyVerteiler/internal/config"
+	"FancyVerteiler/internal/git"
 	"bytes"
 	"encoding/json"
 	"fmt"
@@ -13,17 +14,19 @@ import (
 )
 
 type Service struct {
-	hc *http.Client
+	hc  *http.Client
+	git *git.Service
 }
 
-func New() *Service {
+func New(git *git.Service) *Service {
 	return &Service{
-		hc: &http.Client{},
+		hc:  &http.Client{},
+		git: git,
 	}
 }
 
 func (s *Service) SendSuccessMessage(webhookURL string, cfg *config.DeploymentConfig) error {
-	desc, err := buildDescription(cfg)
+	desc, err := s.buildDescription(cfg)
 	if err != nil {
 		return err
 	}
@@ -63,7 +66,7 @@ func (s *Service) SendSuccessMessage(webhookURL string, cfg *config.DeploymentCo
 	return nil
 }
 
-func buildDescription(cfg *config.DeploymentConfig) (string, error) {
+func (s *Service) buildDescription(cfg *config.DeploymentConfig) (string, error) {
 	ver, err := cfg.Version()
 	if err != nil {
 		return "", err
@@ -82,14 +85,24 @@ func buildDescription(cfg *config.DeploymentConfig) (string, error) {
 		desc += fmt.Sprintf("\n**Channel:** %s", channel)
 	}
 
+	if s.git.CommitSHA() != "unknown" && s.git.CommitMessage() != "unknown" {
+		desc += fmt.Sprintf("\n**Commit ((%s)[%s]):** %s", s.git.CommitSHA(), s.git.GitHubRepoURL(), s.git.CommitMessage())
+	}
+
+	desc += "\n"
+
 	if cfg.FancySpaces != nil {
 		fileName := filepath.Base(cfg.PluginJarPath)
 		fileName = strings.ReplaceAll(fileName, "%VERSION%", ver)
-		desc += fmt.Sprintf("\n**FancySpaces:** https://fancyspaces.net/spaces/%s/versions/%s", cfg.FancySpaces.SpaceID, ver)
+		desc += fmt.Sprintf("\n**FancySpaces:** [click here](https://fancyspaces.net/spaces/%s/versions/%s)", cfg.FancySpaces.SpaceID, ver)
 	}
 
 	if cfg.Modrinth != nil {
-		desc += fmt.Sprintf("\n**Modrinth:** https://modrinth.com/plugin/%s/version/%s", cfg.ProjectName, ver)
+		desc += fmt.Sprintf("\n**Modrinth:** [click here](https://modrinth.com/plugin/%s/version/%s)", cfg.ProjectName, ver)
+	}
+
+	if cfg.Hangar != nil {
+		desc += fmt.Sprintf("\n**Hangar:** [click here](https://hangar.papermc.io/%s/%s/versions/%s)", cfg.Hangar.Author, cfg.Hangar.ProjectID, ver)
 	}
 
 	return desc, nil
