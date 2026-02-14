@@ -1,6 +1,6 @@
 module FancyVerteiler
 
-go 1.25.5
+go 1.26
 
 require (
 	github.com/OliverSchlueter/goutils v0.0.28
