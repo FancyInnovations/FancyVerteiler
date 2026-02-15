@@ -85,7 +85,7 @@ func (s *Service) buildDescription(cfg *config.DeploymentConfig) (string, error)
 		desc += fmt.Sprintf("\n**Channel:** %s", channel)
 	}
 
-	desc += fmt.Sprintf("\n**Commit ((%s)[%s]):** %s", s.git.CommitSHA(), s.git.CommitURL(), s.git.CommitMessage())
+	desc += fmt.Sprintf("\n**Commit ([%s](%s)):** %s", s.git.CommitSHA(), s.git.CommitURL(), s.git.CommitMessage())
 
 	desc += "\n"
 
