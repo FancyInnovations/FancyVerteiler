@@ -82,7 +82,7 @@ func (s *Service) buildDescription(cfg *config.DeploymentConfig) (string, error)
 			channel = cfg.Modrinth.Channel
 		}
 
-		desc += fmt.Sprintf("\n**Channel:** %s", channel)
+		desc += fmt.Sprintf("\n**Channel:** %s", strings.ToUpper(channel))
 	}
 
 	desc += fmt.Sprintf("\n**Commit ([%s](%s)):** %s", s.git.CommitSHA(), s.git.CommitURL(), s.git.CommitMessage())
