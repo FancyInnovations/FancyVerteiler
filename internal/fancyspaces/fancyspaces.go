@@ -77,7 +77,7 @@ func (s *Service) createVersion(cfg *config.DeploymentConfig) error {
 		return err
 	}
 	reqBody.Header.Set("Content-Type", "application/json")
-	reqBody.Header.Set("Authorization", s.apiKey)
+	reqBody.Header.Set("Authorization", "ApiKey "+s.apiKey)
 	reqBody.Header.Set("User-Agent", "FancyVerteiler (https://github.com/FancyInnovations/FancyVerteiler)")
 
 	resp, err := s.hc.Do(reqBody)
@@ -119,7 +119,7 @@ func (s *Service) uploadFile(cfg *config.DeploymentConfig) error {
 	if err != nil {
 		return err
 	}
-	reqBody.Header.Set("Authorization", s.apiKey)
+	reqBody.Header.Set("Authorization", "ApiKey "+s.apiKey)
 	reqBody.Header.Set("User-Agent", "FancyVerteiler (https://github.com/FancyInnovations/FancyVerteiler)")
 
 	resp, err := s.hc.Do(reqBody)
@@ -159,7 +159,7 @@ func (s *Service) uploadAdditionalFile(cfg *config.DeploymentConfig, fileName, f
 	if err != nil {
 		return err
 	}
-	reqBody.Header.Set("Authorization", s.apiKey)
+	reqBody.Header.Set("Authorization", "ApiKey "+s.apiKey)
 	reqBody.Header.Set("User-Agent", "FancyVerteiler (https://github.com/FancyInnovations/FancyVerteiler)")
 
 	resp, err := s.hc.Do(reqBody)
