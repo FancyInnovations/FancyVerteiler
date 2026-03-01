@@ -88,19 +88,20 @@ func (s *Service) buildDescription(cfg *config.DeploymentConfig) (string, error)
 	desc += fmt.Sprintf("\n**Commit ([%s](%s)):** %s", s.git.CommitSHA(), s.git.CommitURL(), s.git.CommitMessage())
 
 	desc += "\n"
+	desc += "**Download Links:**"
 
 	if cfg.FancySpaces != nil {
 		fileName := filepath.Base(cfg.PluginJarPath)
 		fileName = strings.ReplaceAll(fileName, "%VERSION%", ver)
-		desc += fmt.Sprintf("\n**FancySpaces:** [click here](https://fancyspaces.net/spaces/%s/versions/%s)", cfg.FancySpaces.SpaceID, ver)
+		desc += fmt.Sprintf("\n- [FancySpaces](https://fancyspaces.net/spaces/%s/versions/%s)", cfg.FancySpaces.SpaceID, ver)
 	}
 
 	if cfg.Modrinth != nil {
-		desc += fmt.Sprintf("\n**Modrinth:** [click here](https://modrinth.com/plugin/%s/version/%s)", cfg.ProjectName, ver)
+		desc += fmt.Sprintf("\n- [Modrinth](https://modrinth.com/plugin/%s/version/%s)", cfg.ProjectName, ver)
 	}
 
 	if cfg.Hangar != nil {
-		desc += fmt.Sprintf("\n**Hangar:** [click here](https://hangar.papermc.io/%s/%s/versions/%s)", cfg.Hangar.Author, cfg.Hangar.ProjectID, ver)
+		desc += fmt.Sprintf("\n- [Hangar](https://hangar.papermc.io/%s/%s/versions/%s)", cfg.Hangar.Author, cfg.Hangar.ProjectID, ver)
 	}
 
 	return desc, nil
