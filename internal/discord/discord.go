@@ -88,7 +88,7 @@ func (s *Service) buildDescription(cfg *config.DeploymentConfig) (string, error)
 	desc += fmt.Sprintf("\n**Commit ([%s](%s)):** %s", s.git.CommitSHA(), s.git.CommitURL(), s.git.CommitMessage())
 
 	desc += "\n"
-	desc += "**Download Links:**"
+	desc += "\n**Download Links:**"
 
 	if cfg.FancySpaces != nil {
 		fileName := filepath.Base(cfg.PluginJarPath)
