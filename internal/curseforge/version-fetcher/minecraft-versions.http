@@ -1,0 +1,5 @@
+### GET Fetch Minecraft versions from CurseForge API
+GET https://minecraft.curseforge.com/api/game/versions
+X-Api-Token: {{apiKey}}
+
+>>! response.json

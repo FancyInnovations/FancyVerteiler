@@ -1,2 +1,4 @@
 .idea
 FancyVerteiler.iml
+
+internal/curseforge/version-fetcher/**.json
