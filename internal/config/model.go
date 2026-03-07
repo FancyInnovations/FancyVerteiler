@@ -73,6 +73,15 @@ type CurseForge struct {
 	Relations    *CurseForgeRelations `json:"relations,omitempty"`
 }
 
+type CurseForgeRelations struct {
+	Projects []CurseForgeProjectRelation `json:"projects"`
+}
+
+type CurseForgeProjectRelation struct {
+	Slug string `json:"slug"`
+	Type string `json:"type"`
+}
+
 type UnifiedHytale struct {
 	ProjectID      string   `json:"project_id"`
 	GameVersions   []string `json:"game_versions"`
@@ -82,15 +91,6 @@ type UnifiedHytale struct {
 type Hytahub struct {
 	Slug    string `json:"slug"`
 	Channel string `json:"channel"` // release, beta, alpha
-}
-
-type CurseForgeRelations struct {
-	Projects []CurseForgeProjectRelation `json:"projects"`
-}
-
-type CurseForgeProjectRelation struct {
-	Slug string `json:"slug"`
-	Type string `json:"type"`
 }
 
 func (d *DeploymentConfig) PluginJar() ([]byte, error) {

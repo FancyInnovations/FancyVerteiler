@@ -31,11 +31,16 @@ func (s *Service) SendSuccessMessage(webhookURL string, cfg *config.DeploymentCo
 		return err
 	}
 
+	ver, err := cfg.Version()
+	if err != nil {
+		return err
+	}
+
 	msg := Message{
-		Content: "Plugin deployment completed!",
+		Content: "New version of " + cfg.ProjectName + " published!",
 		Embeds: []Embed{
 			{
-				Title:       fmt.Sprintf("New version of %s deployed!", cfg.ProjectName),
+				Title:       fmt.Sprintf("%s v%s published!", cfg.ProjectName, ver),
 				Description: desc,
 				Color:       0x00FF00,
 			},
@@ -85,7 +90,8 @@ func (s *Service) buildDescription(cfg *config.DeploymentConfig) (string, error)
 		desc += fmt.Sprintf("\n**Channel:** %s", strings.ToUpper(channel))
 	}
 
-	desc += fmt.Sprintf("\n**Commit ([%s](%s)):** %s", s.git.CommitSHA(), s.git.CommitURL(), s.git.CommitMessage())
+	desc += fmt.Sprintf("\n**Commit ([%s](%s)):**", s.git.CommitSHA(), s.git.CommitURL())
+	desc += fmt.Sprintf("\n```\n%s\n```", s.git.CommitMessage())
 
 	desc += "\n"
 	desc += "\n**Download Links:**"
@@ -102,6 +108,10 @@ func (s *Service) buildDescription(cfg *config.DeploymentConfig) (string, error)
 
 	if cfg.Hangar != nil {
 		desc += fmt.Sprintf("\n- [Hangar](https://hangar.papermc.io/%s/%s/versions/%s)", cfg.Hangar.Author, cfg.Hangar.ProjectID, ver)
+	}
+
+	if cfg.CurseForge != nil {
+		desc += fmt.Sprintf("\n- [CurseForge](https://www.curseforge.com/minecraft/bukkit-plugins/%s/files/all)", cfg.ProjectName)
 	}
 
 	return desc, nil
