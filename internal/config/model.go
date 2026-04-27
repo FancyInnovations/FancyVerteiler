@@ -43,6 +43,7 @@ type Modrinth struct {
 	Channel           string   `json:"channel"`
 	Loaders           []string `json:"loaders"`
 	Featured          bool     `json:"featured"`
+	Dependencies      []string `json:"dependencies,omitempty"` // project ids
 }
 
 type Hangar struct {
