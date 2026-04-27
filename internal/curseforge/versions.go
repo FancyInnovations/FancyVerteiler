@@ -4,7 +4,7 @@ import "fmt"
 
 // Loader type constants
 const (
-	BukkitLoaderID   = 1     // Bukkit/Spigot/Paper plugins
+	BukkitLoaderID   = 1 // Bukkit/Spigot/Paper plugins
 	FabricLoaderID   = 4
 	ForgeLoaderID    = 1
 	NeoForgeLoaderID = 6
@@ -51,6 +51,11 @@ var pluginVersionToID = map[string]int{
 	"1.21.9":  13933,
 	"1.21.10": 13966,
 	"1.21.11": 14417,
+
+	// 26.1.x versions
+	"26.1":   16083,
+	"26.1.1": 16084,
+	"26.1.2": 16085,
 }
 
 // modVersionToID maps Minecraft version strings to CurseForge game version IDs
