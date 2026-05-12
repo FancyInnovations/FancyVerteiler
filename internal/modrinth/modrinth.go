@@ -105,12 +105,14 @@ func (s *Service) dataJson(cfg *config.DeploymentConfig) (string, error) {
 	cl = strings.ReplaceAll(cl, "%COMMIT_HASH%", s.git.CommitSHA())
 	cl = strings.ReplaceAll(cl, "%COMMIT_MESSAGE%", s.git.CommitMessage())
 
-	var dependencies []ProjectDependency
-	for _, d := range cfg.Modrinth.Dependencies {
-		dependencies = append(dependencies, ProjectDependency{
-			ProjectID:      d,
-			DependencyType: "required",
-		})
+	dependencies := []ProjectDependency{}
+	if cfg.Modrinth.Dependencies != nil {
+		for _, d := range cfg.Modrinth.Dependencies {
+			dependencies = append(dependencies, ProjectDependency{
+				ProjectID:      d,
+				DependencyType: "required",
+			})
+		}
 	}
 
 	req := CreateVersionReq{
