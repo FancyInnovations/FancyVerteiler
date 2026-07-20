@@ -1,4 +1,4 @@
 github.com/OliverSchlueter/goutils v0.0.28 h1:Ayj+cwmryXZ8651KWGzH8HAmjlSbyoTmUSoewF3tCDk=
 github.com/OliverSchlueter/goutils v0.0.28/go.mod h1:iyXl5/swm34WrhnD2pHxA4X1PH61bN2O63qGAP9j2qA=
-github.com/sethvargo/go-githubactions v1.3.2 h1:gkibLr/QjosgNWoCf1V58rTMRZw7xZtSB7dY4atbl1Y=
-github.com/sethvargo/go-githubactions v1.3.2/go.mod h1:7/4WeHgYfSz9U5vwuToCK9KPnELVHAhGtRwLREOQV80=
+github.com/sethvargo/go-githubactions v1.4.0 h1:dwscFydQh+NmavGQjUvMe/vCl9HgLqwHsxxPIoWmy5o=
+github.com/sethvargo/go-githubactions v1.4.0/go.mod h1:108h1bJHNUwPbvZBZbn+ieToC/JMClYZ7tBy3vNORxk=
