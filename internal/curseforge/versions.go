@@ -52,10 +52,12 @@ var pluginVersionToID = map[string]int{
 	"1.21.10": 13966,
 	"1.21.11": 14417,
 
-	// 26.1.x versions
+	// 26.x versions
 	"26.1":   16083,
 	"26.1.1": 16084,
 	"26.1.2": 16085,
+	"26.2":   16500,
+	"26.3":   17046,
 }
 
 // modVersionToID maps Minecraft version strings to CurseForge game version IDs
